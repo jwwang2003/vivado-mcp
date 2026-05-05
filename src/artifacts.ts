@@ -14,15 +14,20 @@ function escapeRegex(value: string): string {
 }
 
 function globToRegex(pattern: string): RegExp {
-  const parts = pattern.split(/([*])/g);
-  const regex = parts
-    .map((part) => {
-      if (part === "*") {
-        return "[^/]*";
-      }
-      return escapeRegex(part);
-    })
-    .join("");
+  let regex = "";
+  for (let index = 0; index < pattern.length; index += 1) {
+    if (pattern.startsWith("**/", index)) {
+      regex += "(?:.*/)?";
+      index += 2;
+    } else if (pattern.startsWith("**", index)) {
+      regex += ".*";
+      index += 1;
+    } else if (pattern[index] === "*") {
+      regex += "[^/]*";
+    } else {
+      regex += escapeRegex(pattern[index]);
+    }
+  }
   return new RegExp(`^${regex}$`);
 }
 

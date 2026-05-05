@@ -50,6 +50,36 @@ describe("listArtifacts", () => {
     await expect(listArtifacts(jobWorkspace, ["../*.rpt"])).rejects.toThrow(/escape.*job workspace/i);
     await expect(listArtifacts(jobWorkspace, [join(outside, "*.rpt")])).rejects.toThrow(/escape.*job workspace/i);
   });
+
+  it("supports recursive artifact globs", async () => {
+    const jobWorkspace = await makeTempDir("recursive-artifact-job-workspace");
+    await mkdir(join(jobWorkspace, "demos", "machsuite-aes", "work", "solution", "syn", "report"), {
+      recursive: true
+    });
+    await writeFile(
+      join(jobWorkspace, "demos", "machsuite-aes", "work", "solution", "syn", "report", "aes_csynth.rpt"),
+      "report\n"
+    );
+
+    const artifacts = await listArtifacts(jobWorkspace, ["demos/machsuite-aes/work/**/*.rpt"]);
+
+    expect(artifacts).toEqual([
+      {
+        path: "demos/machsuite-aes/work/solution/syn/report/aes_csynth.rpt",
+        absolutePath: join(
+          jobWorkspace,
+          "demos",
+          "machsuite-aes",
+          "work",
+          "solution",
+          "syn",
+          "report",
+          "aes_csynth.rpt"
+        ),
+        sizeBytes: 7
+      }
+    ]);
+  });
 });
 
 describe("readLogTail", () => {

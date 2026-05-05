@@ -1,0 +1,15 @@
+{
+  "workspace": ".",
+  "vivado_version": "2022.1",
+  "flow": {
+    "type": "tcl_script",
+    "tool_profile": "vitis_hls.legacy",
+    "script_path": "demos/machsuite-aes/machsuite-aes-hls.tcl"
+  },
+  "resource_slots": 1,
+  "timeout_seconds": 3600,
+  "artifacts": [
+    "demos/machsuite-aes/work/**/*.rpt",
+    "demos/machsuite-aes/work/**/*.log"
+  ]
+}

@@ -65,6 +65,17 @@ Real Vivado smoke tests are opt-in and run lightweight Tcl only:
 VIVADO_MCP_RUN_REAL_VIVADO=1 pnpm exec vitest run tests/realVivadoSmoke.test.ts
 ```
 
+## Regression Demo
+
+The MachSuite AES HLS regression demo lives in `demos/machsuite-aes` and uses the `3rdParty/MachSuite/aes/aes` benchmark from the MachSuite submodule.
+
+The demo provides submit payloads for both local tool layouts:
+
+- `demos/machsuite-aes/submit-job.2022.1.json` uses `vitis_hls.legacy`
+- `demos/machsuite-aes/submit-job.2025.1.json` uses `vitis_run.hls_tcl`
+
+The Tcl script runs HLS C synthesis only and writes tool output under `demos/machsuite-aes/work/`, which is ignored.
+
 ## License
 
 This project is licensed under the GNU Affero General Public License v3.0 only. See `LICENSE`.
