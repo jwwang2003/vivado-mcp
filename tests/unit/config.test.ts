@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { loadConfigFromObject } from "../src/config.js";
+import { loadConfigFromObject } from "../../src/config.js";
 
 const validConfig = {
   workspaceRoot: "/workspace",

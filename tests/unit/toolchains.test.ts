@@ -4,8 +4,8 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { ToolchainRegistry } from "../src/toolchains.js";
-import type { VivadoMcpConfig } from "../src/types.js";
+import { ToolchainRegistry } from "../../src/toolchains.js";
+import type { VivadoMcpConfig } from "../../src/types.js";
 
 async function expectResolutionRejection(action: () => unknown | Promise<unknown>, pattern: RegExp): Promise<void> {
   await expect(Promise.resolve().then(action)).rejects.toThrow(pattern);

@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 
 import { describe, expect, it } from "vitest";
 
-import { prepareFlow } from "../src/flows.js";
+import { prepareFlow } from "../../src/flows.js";
 
 async function makeTempDir(name: string): Promise<string> {
   return mkdir(join(tmpdir(), `vivado-mcp-${name}-${Date.now()}-${Math.random().toString(16).slice(2)}`), {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { renderCommand, shellQuote } from "../src/command.js";
-import type { CommandProfile } from "../src/types.js";
+import { renderCommand, shellQuote } from "../../src/command.js";
+import type { CommandProfile } from "../../src/types.js";
 
 describe("shellQuote", () => {
   it("quotes shell words with spaces and embedded single quotes", () => {

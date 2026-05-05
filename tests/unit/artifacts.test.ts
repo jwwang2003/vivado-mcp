@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 
 import { describe, expect, it } from "vitest";
 
-import { listArtifacts, readLogTail } from "../src/artifacts.js";
+import { listArtifacts, readLogTail } from "../../src/artifacts.js";
 
 async function makeTempDir(name: string): Promise<string> {
   return mkdir(join(tmpdir(), `vivado-mcp-${name}-${Date.now()}-${Math.random().toString(16).slice(2)}`), {

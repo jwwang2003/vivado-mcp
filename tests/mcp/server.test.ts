@@ -2,8 +2,8 @@ import { describe, expect, it, vi } from "vitest";
 
 import { CallToolRequestSchema, ListToolsRequestSchema } from "@modelcontextprotocol/sdk/types.js";
 
-import { createVivadoMcpServer, VIVADO_TOOL_NAMES } from "../src/server.js";
-import { submitJobSchema } from "../src/schemas.js";
+import { createVivadoMcpServer, VIVADO_TOOL_NAMES } from "../../src/server.js";
+import { submitJobSchema } from "../../src/schemas.js";
 
 const expectedToolNames = [
   "vivado_submit_job",

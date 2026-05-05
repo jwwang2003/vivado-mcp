@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { runProcess } from "../src/runner.js";
+import { runProcess } from "../../src/runner.js";
 
 const realVivadoEnabled = process.env.VIVADO_MCP_RUN_REAL_VIVADO === "1";
 const maybeDescribe = realVivadoEnabled ? describe : describe.skip;

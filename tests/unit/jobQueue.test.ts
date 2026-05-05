@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { InMemoryJobQueue } from "../src/jobQueue.js";
-import type { JobSummary } from "../src/types.js";
+import { InMemoryJobQueue } from "../../src/jobQueue.js";
+import type { JobSummary } from "../../src/types.js";
 
 type Deferred = {
   promise: Promise<void>;

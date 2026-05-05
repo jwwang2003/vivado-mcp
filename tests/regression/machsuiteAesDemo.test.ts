@@ -4,9 +4,9 @@ import path from "node:path";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { loadConfigFromObject } from "../src/config.js";
-import { submitJobSchema } from "../src/schemas.js";
-import { VivadoService } from "../src/service.js";
+import { loadConfigFromObject } from "../../src/config.js";
+import { submitJobSchema } from "../../src/schemas.js";
+import { VivadoService } from "../../src/service.js";
 
 const repoRoot = process.cwd();
 

@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { runProcess } from "../src/runner.js";
+import { runProcess } from "../../src/runner.js";
 
 async function fakeExecutable(script: string): Promise<{ dir: string; executable: string }> {
   const dir = await mkdtemp(path.join(tmpdir(), "vivado-mcp-runner-"));

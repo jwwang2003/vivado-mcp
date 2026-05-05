@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { resolveExistingWorkspacePath, resolveWorkspacePath } from "../src/paths.js";
+import { resolveExistingWorkspacePath, resolveWorkspacePath } from "../../src/paths.js";
 
 async function expectPathRejection(action: () => unknown | Promise<unknown>, pattern: RegExp): Promise<void> {
   await expect(Promise.resolve().then(action)).rejects.toThrow(pattern);

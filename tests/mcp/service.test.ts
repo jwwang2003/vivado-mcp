@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { describe, expect, it, vi } from "vitest";
 
-import { VivadoService } from "../src/service.js";
+import { VivadoService } from "../../src/service.js";
 
 const config = {
   workspaceRoot: "/workspace",

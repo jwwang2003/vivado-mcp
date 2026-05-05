@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 
 import { describe, expect, it } from "vitest";
 
-import { loadConfigFromObject } from "../src/config.js";
+import { loadConfigFromObject } from "../../src/config.js";
 
 describe("Docker and example assets", () => {
   it("ships an example config for local Vivado 2022.1 and 2025.1 layouts", async () => {

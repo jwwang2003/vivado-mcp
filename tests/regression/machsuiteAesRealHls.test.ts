@@ -4,10 +4,10 @@ import path from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { loadConfigFromObject } from "../src/config.js";
-import { submitJobSchema } from "../src/schemas.js";
-import { VivadoService } from "../src/service.js";
-import type { JobSummary } from "../src/types.js";
+import { loadConfigFromObject } from "../../src/config.js";
+import { submitJobSchema } from "../../src/schemas.js";
+import { VivadoService } from "../../src/service.js";
+import type { JobSummary } from "../../src/types.js";
 
 const enabled = process.env.VIVADO_MCP_RUN_MACHSUITE_AES_HLS === "1";
 const maybeDescribe = enabled ? describe : describe.skip;
