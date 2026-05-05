@@ -26,8 +26,25 @@ describe("Docker and example assets", () => {
     const dockerfile = await readFile("Dockerfile", "utf8");
 
     expect(dockerfile).toContain("node:22");
+    expect(dockerfile).toContain("LC_ALL=en_US.UTF-8");
+    expect(dockerfile).toContain("locale-gen");
+    expect(dockerfile).toContain("libc6-dev");
+    expect(dockerfile).toContain("libtinfo5");
+    expect(dockerfile).toContain("libx11-6");
     expect(dockerfile).not.toMatch(/Vivado.*install|Xilinx.*install/i);
     expect(dockerfile).toContain("docker-entrypoint.sh");
+  });
+
+  it("ships a Docker test target with regression assets but no generated work", async () => {
+    const dockerfile = await readFile("Dockerfile", "utf8");
+    const dockerignore = await readFile(".dockerignore", "utf8");
+
+    expect(dockerfile).toContain("FROM deps AS test");
+    expect(dockerfile).toContain("COPY .dockerignore .gitmodules");
+    expect(dockerfile).toContain("COPY tests ./tests");
+    expect(dockerfile).toContain("COPY demos ./demos");
+    expect(dockerfile).toContain("COPY 3rdParty ./3rdParty");
+    expect(dockerignore).toContain("demos/machsuite-aes/work");
   });
 
   it("bind-mounts workspace read-write and host Xilinx root read-only in compose", async () => {

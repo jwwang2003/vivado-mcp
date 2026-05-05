@@ -5,9 +5,9 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { runProcess } from "../../src/runner.js";
+import { realVivadoTestsEnabled } from "./realToolEnv.js";
 
-const realVivadoEnabled = process.env.VIVADO_MCP_RUN_REAL_VIVADO === "1";
-const maybeDescribe = realVivadoEnabled ? describe : describe.skip;
+const maybeDescribe = realVivadoTestsEnabled() ? describe : describe.skip;
 
 const installs = [
   {

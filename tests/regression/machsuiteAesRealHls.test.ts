@@ -1,4 +1,5 @@
 import { mkdtemp, readFile } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
@@ -8,10 +9,11 @@ import { loadConfigFromObject } from "../../src/config.js";
 import { submitJobSchema } from "../../src/schemas.js";
 import { VivadoService } from "../../src/service.js";
 import type { JobSummary } from "../../src/types.js";
+import { realVivadoTestsEnabled } from "./realToolEnv.js";
 
-const enabled = process.env.VIVADO_MCP_RUN_MACHSUITE_AES_HLS === "1";
-const maybeDescribe = enabled ? describe : describe.skip;
+const maybeDescribe = realVivadoTestsEnabled() ? describe : describe.skip;
 const repoRoot = process.cwd();
+const hlsWorkDirEnv = "VIVADO_MCP_HLS_WORK_DIR";
 
 const payloads = {
   "2022.1": "demos/machsuite-aes/submit-job.2022.1.json",
@@ -62,24 +64,42 @@ maybeDescribe("MachSuite AES real HLS synthesis", () => {
           jobRoot: await mkdtemp(path.join(tmpdir(), `vivado-mcp-machsuite-aes-${version}-`))
         });
         const service = new VivadoService({ config });
-        const payload = submitJobSchema.parse(JSON.parse(await readFile(payloads[version], "utf8")));
-
-        const submitted = await service.submitJob(payload);
-        const completed = await waitForTerminal(
-          service,
-          submitted.jobId,
-          Number(process.env.VIVADO_MCP_MACHSUITE_AES_TIMEOUT_MS ?? 900_000)
+        const rawPayload = JSON.parse(await readFile(payloads[version], "utf8"));
+        const runWorkDir = path.posix.join(
+          "demos/machsuite-aes/work",
+          `real-hls-${version}-${randomUUID()}`
         );
+        const payload = submitJobSchema.parse({
+          ...rawPayload,
+          artifacts: [`${runWorkDir}/**/*.rpt`, `${runWorkDir}/**/*.log`]
+        });
+        const previousWorkDir = process.env[hlsWorkDirEnv];
 
-        const stdout = await service.logs(submitted.jobId, { stream: "stdout", tailLines: 500 });
-        const stderr = await service.logs(submitted.jobId, { stream: "stderr", tailLines: 500 });
-        expect(
-          completed,
-          `stdout tail:\n${stdout}\n\nstderr tail:\n${stderr}`
-        ).toMatchObject({ state: "succeeded", exitCode: 0 });
+        try {
+          process.env[hlsWorkDirEnv] = runWorkDir;
+          const submitted = await service.submitJob(payload);
+          const completed = await waitForTerminal(
+            service,
+            submitted.jobId,
+            Number(process.env.VIVADO_MCP_MACHSUITE_AES_TIMEOUT_MS ?? 900_000)
+          );
 
-        const artifacts = await service.artifacts(submitted.jobId);
-        expect(artifacts.some((artifact) => artifact.path.endsWith(".rpt"))).toBe(true);
+          const stdout = await service.logs(submitted.jobId, { stream: "stdout", tailLines: 500 });
+          const stderr = await service.logs(submitted.jobId, { stream: "stderr", tailLines: 500 });
+          expect(
+            completed,
+            `stdout tail:\n${stdout}\n\nstderr tail:\n${stderr}`
+          ).toMatchObject({ state: "succeeded", exitCode: 0 });
+
+          const artifacts = await service.artifacts(submitted.jobId);
+          expect(artifacts.some((artifact) => artifact.path.endsWith(".rpt"))).toBe(true);
+        } finally {
+          if (previousWorkDir === undefined) {
+            delete process.env[hlsWorkDirEnv];
+          } else {
+            process.env[hlsWorkDirEnv] = previousWorkDir;
+          }
+        }
       },
       Number(process.env.VIVADO_MCP_MACHSUITE_AES_TIMEOUT_MS ?? 900_000) + 30_000
     );

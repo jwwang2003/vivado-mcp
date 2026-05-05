@@ -1,0 +1,10 @@
+.git
+.pnpm-store
+.container-home
+.tmp
+node_modules
+dist
+docs
+logs
+vitis_hls.log
+demos/machsuite-aes/work

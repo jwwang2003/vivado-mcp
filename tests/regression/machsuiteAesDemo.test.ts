@@ -34,6 +34,15 @@ describe("MachSuite AES regression demo", () => {
     expect(tcl).not.toContain("cosim_design");
   });
 
+  it("allows the HLS work directory to be overridden through env or Tcl args", async () => {
+    const tcl = await readFile("demos/machsuite-aes/machsuite-aes-hls.tcl", "utf8");
+
+    expect(tcl).toContain("VIVADO_MCP_HLS_WORK_DIR");
+    expect(tcl).toContain("llength $argv");
+    expect(tcl).toContain("lindex $argv 0");
+    expect(tcl).toContain("machsuite_aes_hls");
+  });
+
   it("provides MCP submit payloads for 2022.1 legacy HLS and 2025.1 vitis-run HLS", async () => {
     const legacy = submitJobSchema.parse(
       JSON.parse(await readFile("demos/machsuite-aes/submit-job.2022.1.json", "utf8"))

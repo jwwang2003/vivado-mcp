@@ -59,10 +59,16 @@ pnpm run typecheck
 pnpm run build
 ```
 
-Real Vivado smoke tests are opt-in and run lightweight Tcl only:
+Real Vivado/HLS tests are opt-in through one global environment variable. Lightweight Vivado Tcl smoke tests:
 
 ```bash
-VIVADO_MCP_RUN_REAL_VIVADO=1 pnpm exec vitest run tests/regression/realVivadoSmoke.test.ts
+VIVADO_MCP_RUN_VIVADO=1 pnpm exec vitest run tests/regression/realVivadoSmoke.test.ts
+```
+
+Run the whole suite including real Vivado and HLS regressions:
+
+```bash
+VIVADO_MCP_RUN_VIVADO=1 pnpm test
 ```
 
 ## Regression Demo
@@ -85,13 +91,13 @@ pnpm exec vitest run tests/regression/machsuiteAesDemo.test.ts --reporter=verbos
 The full HLS synthesis regression is opt-in and can take minutes:
 
 ```bash
-VIVADO_MCP_RUN_MACHSUITE_AES_HLS=1 pnpm exec vitest run tests/regression/machsuiteAesRealHls.test.ts --reporter=verbose
+VIVADO_MCP_RUN_VIVADO=1 pnpm exec vitest run tests/regression/machsuiteAesRealHls.test.ts --reporter=verbose
 ```
 
 Run a single installed tool version with:
 
 ```bash
-VIVADO_MCP_RUN_MACHSUITE_AES_HLS=1 VIVADO_MCP_MACHSUITE_AES_VERSIONS=2022.1 pnpm exec vitest run tests/regression/machsuiteAesRealHls.test.ts --reporter=verbose
+VIVADO_MCP_RUN_VIVADO=1 VIVADO_MCP_MACHSUITE_AES_VERSIONS=2022.1 pnpm exec vitest run tests/regression/machsuiteAesRealHls.test.ts --reporter=verbose
 ```
 
 ## License

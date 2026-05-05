@@ -1,10 +1,34 @@
-FROM node:22-bookworm-slim AS deps
+FROM node:22-bookworm-slim AS base
+
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends bash ca-certificates libc6-dev libtinfo5 libx11-6 locales tini \
+  && sed -i 's/^# *\(en_US.UTF-8 UTF-8\)/\1/' /etc/locale.gen \
+  && locale-gen \
+  && rm -rf /var/lib/apt/lists/*
+
+FROM base AS deps
 
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 RUN corepack enable && pnpm install --frozen-lockfile
 
-FROM node:22-bookworm-slim AS build
+FROM deps AS test
+
+WORKDIR /app
+COPY package.json tsconfig.json vitest.config.ts Dockerfile docker-compose.yml docker-entrypoint.sh ./
+COPY .dockerignore .gitmodules ./
+COPY src ./src
+COPY tests ./tests
+COPY config ./config
+COPY demos ./demos
+COPY 3rdParty ./3rdParty
+CMD ["pnpm", "test"]
+
+FROM base AS build
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -12,7 +36,7 @@ COPY package.json tsconfig.json vitest.config.ts ./
 COPY src ./src
 RUN corepack enable && pnpm run build
 
-FROM node:22-bookworm-slim AS runtime
+FROM base AS runtime
 
 WORKDIR /app
 ENV NODE_ENV=production
@@ -20,10 +44,6 @@ ENV VIVADO_MCP_CONFIG=/app/config/vivado-mcp.json
 ENV WORKSPACE_ROOT=/workspace
 ENV HOME=/workspace/.container-home
 ENV TMPDIR=/workspace/.tmp
-
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends bash ca-certificates tini \
-  && rm -rf /var/lib/apt/lists/*
 
 COPY package.json pnpm-lock.yaml ./
 RUN corepack enable && pnpm install --prod --frozen-lockfile

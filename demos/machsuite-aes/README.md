@@ -20,6 +20,12 @@ It creates its HLS working directory under:
 demos/machsuite-aes/work/machsuite_aes_hls
 ```
 
+Set `VIVADO_MCP_HLS_WORK_DIR` or pass one Tcl argument to override the working directory. Relative paths are resolved from the repository root:
+
+```text
+demos/machsuite-aes/work/my-run
+```
+
 That directory is intentionally ignored by Git.
 
 ## Submit Payloads

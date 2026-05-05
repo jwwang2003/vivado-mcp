@@ -5,6 +5,20 @@ set aes_dir [file join $repo_root "3rdParty" "MachSuite" "aes" "aes"]
 set common_dir [file join $repo_root "3rdParty" "MachSuite" "common"]
 set work_dir [file normalize [file join $script_dir "work" "machsuite_aes_hls"]]
 
+if {[info exists ::env(VIVADO_MCP_HLS_WORK_DIR)] && $::env(VIVADO_MCP_HLS_WORK_DIR) ne ""} {
+    set requested_work_dir $::env(VIVADO_MCP_HLS_WORK_DIR)
+} elseif {[llength $argv] > 0} {
+    set requested_work_dir [lindex $argv 0]
+}
+
+if {[info exists requested_work_dir]} {
+    if {[file pathtype $requested_work_dir] eq "relative"} {
+        set work_dir [file normalize [file join $repo_root $requested_work_dir]]
+    } else {
+        set work_dir [file normalize $requested_work_dir]
+    }
+}
+
 set part "xc7vx690tffg1157-2"
 set clock_period 10
 
