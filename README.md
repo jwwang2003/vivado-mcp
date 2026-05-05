@@ -64,3 +64,7 @@ Real Vivado smoke tests are opt-in and run lightweight Tcl only:
 ```bash
 VIVADO_MCP_RUN_REAL_VIVADO=1 pnpm exec vitest run tests/realVivadoSmoke.test.ts
 ```
+
+## License
+
+This project is licensed under the GNU Affero General Public License v3.0 only. See `LICENSE`.
