@@ -18,6 +18,7 @@
         },
         "vitis_hls.legacy": {
           "executable": "/opt/Xilinx/Vitis_HLS/2022.1/bin/vitis_hls",
+          "settingsScript": "/opt/Xilinx/Vitis_HLS/2022.1/settings64.sh",
           "args": ["-f", "{script}"]
         }
       }
@@ -32,6 +33,7 @@
         },
         "vitis_run.hls_tcl": {
           "executable": "/opt/Xilinx/2025.1/Vitis/bin/vitis-run",
+          "settingsScript": "/opt/Xilinx/2025.1/Vitis/settings64.sh",
           "args": ["--mode", "hls", "--tcl", "{script}"]
         }
       }

@@ -22,6 +22,7 @@ const validConfig = {
         },
         "vitis_hls.legacy": {
           executable: "/opt/Xilinx/Vitis_HLS/2022.1/bin/vitis_hls",
+          settingsScript: "/opt/Xilinx/Vitis_HLS/2022.1/settings64.sh",
           args: ["-f", "{script}"]
         }
       }
@@ -36,6 +37,7 @@ const validConfig = {
         },
         "vitis_run.hls_tcl": {
           executable: "/opt/Xilinx/2025.1/Vitis/bin/vitis-run",
+          settingsScript: "/opt/Xilinx/2025.1/Vitis/settings64.sh",
           args: ["--mode", "hls", "--tcl", "{script}"]
         }
       }
@@ -57,6 +59,9 @@ describe("loadConfigFromObject", () => {
       "--tcl",
       "{script}"
     ]);
+    expect(config.toolchains["2022.1"].commands["vitis_hls.legacy"].settingsScript).toBe(
+      "/opt/Xilinx/Vitis_HLS/2022.1/settings64.sh"
+    );
   });
 
   it("rejects a default Vivado version that is not configured", () => {

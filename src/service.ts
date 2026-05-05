@@ -86,7 +86,7 @@ export class VivadoService {
       profile: finalResolution.command,
       scriptPath: prepared.scriptPath,
       args: prepared.args,
-      settingsScript: finalResolution.toolchain.settingsScript
+      settingsScript: finalResolution.command.settingsScript ?? finalResolution.toolchain.settingsScript
     });
 
     return this.queue.submit({
@@ -140,7 +140,13 @@ export class VivadoService {
           vivadoVersion: typed.vivadoVersion,
           toolProfile: typed.toolProfile,
           resourceSlots: typed.resourceSlots,
-          timeoutSeconds: typed.timeoutSeconds
+          timeoutSeconds: typed.timeoutSeconds,
+          priority: typed.priority,
+          artifacts: typed.artifacts,
+          command: typed.command,
+          cwd: typed.cwd,
+          jobDir: typed.jobDir,
+          artifactRoot: typed.workspace
         });
       },
       status: (jobId: string) => queue.get(jobId),
@@ -168,7 +174,7 @@ export class VivadoService {
           return [];
         }
         const artifactPatterns = job.artifacts ?? [];
-        return listArtifacts(job.jobDir ?? path.join(this.options.config.jobRoot, jobId), artifactPatterns);
+        return listArtifacts(job.artifactRoot ?? job.jobDir ?? path.join(this.options.config.jobRoot, jobId), artifactPatterns);
       }
     };
   }

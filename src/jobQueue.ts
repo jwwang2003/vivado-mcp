@@ -13,6 +13,7 @@ export type QueueJobRequest = {
   command?: string[];
   cwd?: string;
   jobDir?: string;
+  artifactRoot?: string;
 };
 
 export type QueueJobResult = {
@@ -35,6 +36,7 @@ export type JobRecord = JobSummary & {
   command?: string[];
   cwd?: string;
   jobDir?: string;
+  artifactRoot?: string;
 };
 
 type ActiveJob = {
@@ -87,7 +89,8 @@ export class InMemoryJobQueue {
       artifacts: request.artifacts,
       command: request.command,
       cwd: request.cwd,
-      jobDir: request.jobDir
+      jobDir: request.jobDir,
+      artifactRoot: request.artifactRoot
     };
 
     this.jobs.set(job.jobId, job);

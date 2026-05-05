@@ -1,3 +1,7 @@
+import { chmod, mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
+
 import { describe, expect, it, vi } from "vitest";
 
 import { VivadoService } from "../src/service.js";
@@ -165,4 +169,75 @@ describe("VivadoService", () => {
     expect(queue.cancel).toHaveBeenCalledWith("job-1");
     expect(queue.artifacts).toHaveBeenCalledWith("job-1");
   });
+
+  it("runs a real queued job with a rendered command using a fake HLS executable", async () => {
+    const root = await mkdtemp(path.join(tmpdir(), "vivado-mcp-service-real-queue-"));
+    const workspaceRoot = path.join(root, "workspace");
+    const jobRoot = path.join(root, "jobs");
+    const binDir = path.join(root, "bin");
+    const fakeHls = path.join(binDir, "fake-hls");
+    await mkdir(path.join(workspaceRoot, "scripts"), { recursive: true });
+    await mkdir(jobRoot, { recursive: true });
+    await mkdir(binDir, { recursive: true });
+    await writeFile(path.join(workspaceRoot, "scripts", "build.tcl"), "puts build\n");
+    await writeFile(fakeHls, "#!/usr/bin/env bash\necho fake-hls \"$@\"\n", "utf8");
+    await chmod(fakeHls, 0o755);
+
+    const service = new VivadoService({
+      config: {
+        workspaceRoot,
+        jobRoot,
+        defaultVivadoVersion: "test",
+        queue: {
+          maxConcurrentJobs: 1,
+          maxPendingJobs: 10,
+          defaultTimeoutSeconds: 10
+        },
+        toolchains: {
+          test: {
+            version: "test",
+            maxConcurrentJobs: 1,
+            commands: {
+              "vitis_hls.legacy": {
+                executable: fakeHls,
+                args: ["-f", "{script}"]
+              }
+            }
+          }
+        }
+      }
+    });
+
+    const submitted = await service.submitJob({
+      workspace: ".",
+      vivado_version: "test",
+      flow: {
+        type: "tcl_script",
+        tool_profile: "vitis_hls.legacy",
+        script_path: "scripts/build.tcl"
+      }
+    });
+
+    await waitFor(async () => {
+      await expect(service.status(submitted.jobId)).resolves.toMatchObject({ state: "succeeded" });
+    });
+    await expect(service.logs(submitted.jobId, { stream: "stdout" })).resolves.toContain("fake-hls -f");
+  });
 });
+
+async function waitFor(assertion: () => Promise<void>): Promise<void> {
+  const deadline = Date.now() + 2_000;
+  let lastError: unknown;
+
+  while (Date.now() < deadline) {
+    try {
+      await assertion();
+      return;
+    } catch (error) {
+      lastError = error;
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    }
+  }
+
+  throw lastError;
+}

@@ -5,4 +5,6 @@ coverage/
 .vitest/
 .vivado-mcp/
 demos/**/work/
+logs/
+vitis_hls.log
 docs/

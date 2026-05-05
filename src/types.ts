@@ -1,6 +1,7 @@
 export type CommandProfile = {
   executable: string;
   args: string[];
+  settingsScript?: string;
   env?: Record<string, string>;
   requiresExitInScript?: boolean;
 };

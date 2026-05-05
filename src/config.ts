@@ -7,6 +7,7 @@ const commandProfileSchema = z
   .object({
     executable: z.string().min(1),
     args: z.array(z.string()).min(1),
+    settingsScript: z.string().min(1).optional(),
     env: z.record(z.string()).optional(),
     requiresExitInScript: z.boolean().optional()
   })

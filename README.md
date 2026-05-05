@@ -76,6 +76,24 @@ The demo provides submit payloads for both local tool layouts:
 
 The Tcl script runs HLS C synthesis only and writes tool output under `demos/machsuite-aes/work/`, which is ignored.
 
+The fast regression checks structure and MCP submission without launching HLS:
+
+```bash
+pnpm exec vitest run tests/machsuiteAesDemo.test.ts --reporter=verbose
+```
+
+The full HLS synthesis regression is opt-in and can take minutes:
+
+```bash
+VIVADO_MCP_RUN_MACHSUITE_AES_HLS=1 pnpm exec vitest run tests/machsuiteAesRealHls.test.ts --reporter=verbose
+```
+
+Run a single installed tool version with:
+
+```bash
+VIVADO_MCP_RUN_MACHSUITE_AES_HLS=1 VIVADO_MCP_MACHSUITE_AES_VERSIONS=2022.1 pnpm exec vitest run tests/machsuiteAesRealHls.test.ts --reporter=verbose
+```
+
 ## License
 
 This project is licensed under the GNU Affero General Public License v3.0 only. See `LICENSE`.
