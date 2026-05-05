@@ -1,0 +1,40 @@
+{
+  "workspaceRoot": "/workspace",
+  "jobRoot": "/workspace/.vivado-mcp/jobs",
+  "defaultVivadoVersion": "2025.1",
+  "queue": {
+    "maxConcurrentJobs": 2,
+    "maxPendingJobs": 100,
+    "defaultTimeoutSeconds": 3600
+  },
+  "toolchains": {
+    "2022.1": {
+      "settingsScript": "/opt/Xilinx/Vivado/2022.1/settings64.sh",
+      "maxConcurrentJobs": 1,
+      "commands": {
+        "vivado.batch": {
+          "executable": "/opt/Xilinx/Vivado/2022.1/bin/vivado",
+          "args": ["-mode", "batch", "-source", "{script}", "-tclargs", "{args}"]
+        },
+        "vitis_hls.legacy": {
+          "executable": "/opt/Xilinx/Vitis_HLS/2022.1/bin/vitis_hls",
+          "args": ["-f", "{script}"]
+        }
+      }
+    },
+    "2025.1": {
+      "settingsScript": "/opt/Xilinx/2025.1/Vivado/settings64.sh",
+      "maxConcurrentJobs": 2,
+      "commands": {
+        "vivado.batch": {
+          "executable": "/opt/Xilinx/2025.1/Vivado/bin/vivado",
+          "args": ["-mode", "batch", "-source", "{script}", "-tclargs", "{args}"]
+        },
+        "vitis_run.hls_tcl": {
+          "executable": "/opt/Xilinx/2025.1/Vitis/bin/vitis-run",
+          "args": ["--mode", "hls", "--tcl", "{script}"]
+        }
+      }
+    }
+  }
+}

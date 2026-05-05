@@ -1,0 +1,21 @@
+services:
+  vivado-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: vivado-mcp:local
+    init: true
+    user: "${UID:-1000}:${GID:-1000}"
+    working_dir: /workspace
+    environment:
+      VIVADO_MCP_CONFIG: /app/config/vivado-mcp.json
+      WORKSPACE_ROOT: /workspace
+      HOME: /workspace/.container-home
+      TMPDIR: /workspace/.tmp
+      XILINXD_LICENSE_FILE: "${XILINXD_LICENSE_FILE:-}"
+      LM_LICENSE_FILE: "${LM_LICENSE_FILE:-}"
+    volumes:
+      - "${HOST_WORKSPACE:?set HOST_WORKSPACE}:/workspace:rw"
+      - "${HOST_XILINX_ROOT:-/opt/Xilinx}:/opt/Xilinx:ro"
+      - "${VIVADO_MCP_CONFIG_HOST:-./config/vivado-mcp.example.json}:/app/config/vivado-mcp.json:ro"
+    command: ["node", "dist/index.js"]
